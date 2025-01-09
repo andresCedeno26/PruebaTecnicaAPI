@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using PruebaTecnicaAPI.Conexion;
 using PruebaTecnicaAPI.Models;
 using PruebaTecnicaAPI.Util;
+using Serilog;
+using PruebaTecnicaDLLNuGet;
 
 namespace PruebaTecnicaAPI.Controllers
 {
@@ -33,7 +35,7 @@ namespace PruebaTecnicaAPI.Controllers
             {
                 var request = _contextAccessor.HttpContext.Request;
                 Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-                //Valido token
+
                 var token = Jwt.ReadJwtToken(headerValue, _configuration["TokenKey"], new LoginResponse());
                 if (token == null)
                 {
@@ -72,7 +74,7 @@ namespace PruebaTecnicaAPI.Controllers
             {
                 var request = _contextAccessor.HttpContext.Request;
                 Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-                //Valido token
+
                 var token = Jwt.ReadJwtToken(headerValue, _configuration["TokenKey"], new LoginResponse());
                 if (token == null)
                 {
@@ -80,6 +82,8 @@ namespace PruebaTecnicaAPI.Controllers
                     return base.BadRequest(new { message = "Token inválido", errorCode = HttpStatusCode.BadRequest });
                 }
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
+                requestPersonas.Pass = Class1.EncryptPassword(requestPersonas.Pass);
+
                 parameters.Add("@iJson", JsonConvert.SerializeObject(requestPersonas));
 
                 var sql = new Sql(_configuration.GetConnectionString(token.ConexionName));
@@ -112,7 +116,7 @@ namespace PruebaTecnicaAPI.Controllers
             {
                 var request = _contextAccessor.HttpContext.Request;
                 Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-                //Valido token
+
                 var token = Jwt.ReadJwtToken(headerValue, _configuration["TokenKey"], new LoginResponse());
                 if (token == null)
                 {
@@ -120,6 +124,7 @@ namespace PruebaTecnicaAPI.Controllers
                     return base.BadRequest(new { message = "Token inválido", errorCode = HttpStatusCode.BadRequest });
                 }
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
+                requestPersonas.Pass = Class1.EncryptPassword(requestPersonas.Pass);
                 parameters.Add("@iJson", JsonConvert.SerializeObject(requestPersonas));
 
                 var sql = new Sql(_configuration.GetConnectionString(token.ConexionName));

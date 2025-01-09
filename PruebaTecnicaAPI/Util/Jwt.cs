@@ -70,23 +70,20 @@ namespace PruebaTecnicaAPI.Util
                 var key = Encoding.UTF8.GetBytes(secretKey);
                 var tokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = false, // Puedes configurar esto según tus necesidades
-                    ValidateAudience = false, // Puedes configurar esto según tus necesidades
-                    ValidateLifetime = true, // Validar la expiración del token
+                    ValidateIssuer = false, 
+                    ValidateAudience = false, 
+                    ValidateLifetime = true, 
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ClockSkew = TimeSpan.Zero, // Asegura que no hay desviación de tiempo
+                    ClockSkew = TimeSpan.Zero, 
                 };
                 token = token.Replace("Bearer ", "");
-                // Intenta validar el token
+
                 tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
 
-                // Si llega aquí sin lanzar una excepción, el token es válido y no ha expirado
                 return true;
             }
             catch (Exception ex)
             {
-                // Si hay un error al validar el token, o ha expirado o es inválido
-                // Aquí puedes imprimir el error ex.Message para obtener más detalles
                 return false;
             }
         }

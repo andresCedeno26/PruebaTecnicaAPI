@@ -1,10 +1,12 @@
 ﻿using System.Net;
 using System.Reflection;
+using System.Security.Cryptography.Xml;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PruebaTecnicaAPI.Conexion;
 using PruebaTecnicaAPI.Models;
 using PruebaTecnicaAPI.Util;
+using PruebaTecnicaDLLNuGet;
 
 namespace PruebaTecnicaAPI.Controllers
 {
@@ -24,7 +26,6 @@ namespace PruebaTecnicaAPI.Controllers
         }
 
         [HttpPost("auth")]
-        //[ServiceFilter(typeof(ValidationFilterAttribute))]
         public IActionResult Login(Login login)
         {
             try
@@ -34,13 +35,11 @@ namespace PruebaTecnicaAPI.Controllers
 
                 var sql = new Sql(_configuration.GetConnectionString(conexion));
 
-                login.Pass = Varios.EncryptPassword(login.Pass);
+                login.Pass = Class1.EncryptPassword(login.Pass);
 
 
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters.Add("@iJson", JsonConvert.SerializeObject(login));
-
-                //sql.prueba();
 
                 var response = sql.ExecuteProcedureDynamic("pValidaLogin", parameters);
 
